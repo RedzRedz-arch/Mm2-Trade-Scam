@@ -1,27 +1,13 @@
--- MM2 Premium Script UI
+-- MM2 Premium UI Only
+-- This is just a UI with no functionality
 -- For educational purposes only
 
--- Create a secure loadstring function
-local function loadstring_secure(code)
-    return loadstring(code)()
-end
-
--- Main UI Creation
-local MM2Premium = {}
-
--- Create ScreenGui
+-- Create UI container
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "MM2PremiumGUI"
+ScreenGui.Name = "MM2PremiumUI"
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = game:GetService("CoreGui")
-
--- For security with various executors
-pcall(function()
-    if syn then
-        syn.protect_gui(ScreenGui)
-    end
-end)
 
 -- UI Variables
 local GUI = {}
@@ -125,7 +111,7 @@ CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(0, 22, 0, 22)
 CloseButton.Position = UDim2.new(1, -25, 0, 9)
 CloseButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-CloseButton.Text = "×"  -- Close symbol (multiplication sign)
+CloseButton.Text = "×"  -- Close symbol
 CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseButton.Font = Enum.Font.GothamBold
 CloseButton.TextSize = 16
@@ -154,7 +140,7 @@ Divider.BackgroundTransparency = 0.7
 Divider.BorderSizePixel = 0
 Divider.Parent = ContentFrame
 
--- Feature Functions
+-- Feature Functions - Create toggle UI only
 local function CreateToggle(name, position, startEnabled)
     local ToggleFrame = Instance.new("Frame")
     ToggleFrame.Name = name .. "Toggle"
@@ -187,7 +173,7 @@ local function CreateToggle(name, position, startEnabled)
     SwitchFrame.Name = "SwitchFrame"
     SwitchFrame.Size = UDim2.new(0, 44, 0, 22)
     SwitchFrame.Position = UDim2.new(1, -55, 0.5, -11)
-    SwitchFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+    SwitchFrame.BackgroundColor3 = startEnabled and Color3.fromRGB(128, 0, 255) or Color3.fromRGB(40, 40, 60)
     SwitchFrame.Parent = ToggleFrame
     
     -- Switch Rounding
@@ -199,9 +185,7 @@ local function CreateToggle(name, position, startEnabled)
     local ToggleKnob = Instance.new("Frame")
     ToggleKnob.Name = "Knob"
     ToggleKnob.Size = UDim2.new(0, 18, 0, 18)
-    ToggleKnob.Position = startEnabled 
-        and UDim2.new(0, 23, 0, 2) 
-        or UDim2.new(0, 3, 0, 2)
+    ToggleKnob.Position = startEnabled and UDim2.new(0, 23, 0, 2) or UDim2.new(0, 3, 0, 2)
     ToggleKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ToggleKnob.Parent = SwitchFrame
     
@@ -212,8 +196,6 @@ local function CreateToggle(name, position, startEnabled)
     
     -- If enabled, add the active gradient
     if startEnabled then
-        SwitchFrame.BackgroundColor3 = Color3.fromRGB(128, 0, 255)
-        
         local SwitchGradient = Instance.new("UIGradient")
         SwitchGradient.Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, Color3.fromRGB(128, 0, 255)),
@@ -222,7 +204,7 @@ local function CreateToggle(name, position, startEnabled)
         SwitchGradient.Parent = SwitchFrame
     end
     
-    -- Make the toggle clickable
+    -- Make the toggle interactive
     ToggleFrame.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or 
            input.UserInputType == Enum.UserInputType.Touch then
@@ -282,7 +264,7 @@ SpawnerTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 SpawnerTitle.TextSize = 14
 SpawnerTitle.Parent = ContentFrame
 
--- Weapon Selection
+-- Weapon Selection - UI Only
 local function CreateWeaponButton(name, position)
     local WeaponButton = Instance.new("TextButton")
     WeaponButton.Name = name .. "Button"
@@ -307,7 +289,7 @@ local function CreateWeaponButton(name, position)
     ButtonStroke.Thickness = 1
     ButtonStroke.Parent = WeaponButton
     
-    -- Button effects
+    -- Button hover effects
     WeaponButton.MouseEnter:Connect(function()
         WeaponButton.BackgroundColor3 = Color3.fromRGB(60, 25, 90)
     end)
@@ -316,12 +298,13 @@ local function CreateWeaponButton(name, position)
         WeaponButton.BackgroundColor3 = Color3.fromRGB(40, 15, 60)
     end)
     
+    -- Button click visual effect
     WeaponButton.MouseButton1Click:Connect(function()
         WeaponButton.BackgroundColor3 = Color3.fromRGB(80, 30, 120)
         WeaponButton.Text = "SPAWNED!"
         
         -- Reset after a moment
-        wait(1)
+        task.wait(1)
         WeaponButton.Text = name
         WeaponButton.BackgroundColor3 = Color3.fromRGB(40, 15, 60)
     end)
@@ -398,8 +381,8 @@ end)
 ActivateButton.MouseButton1Click:Connect(function()
     ActivateButton.Text = "ACTIVATING..."
     
-    -- Simulate activation
-    wait(1.5)
+    -- Simulate activation (visual only)
+    task.wait(1.5)
     ActivateButton.Text = "PREMIUM ACTIVATED"
 end)
 
@@ -444,8 +427,8 @@ CloseButton.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
--- Notification System
-MM2Premium.notify = function(title, message, duration)
+-- Simple notification system
+local function CreateNotification(title, message, duration)
     local NotificationFrame = Instance.new("Frame")
     NotificationFrame.Name = "Notification"
     NotificationFrame.Size = UDim2.new(0, 200, 0, 60)
@@ -496,15 +479,15 @@ MM2Premium.notify = function(title, message, duration)
     NotificationFrame:TweenPosition(UDim2.new(1, -220, 0, 20), "Out", "Quad", 0.5, true)
     
     -- Auto remove
-    delay(duration or 3, function()
+    task.delay(duration or 3, function()
         NotificationFrame:TweenPosition(UDim2.new(1, 20, 0, 20), "Out", "Quad", 0.5, true)
-        wait(0.5)
+        task.wait(0.5)
         NotificationFrame:Destroy()
     end)
 end
 
 -- Show welcome notification
-MM2Premium.notify("MM2 Premium", "Script loaded successfully!", 3)
+CreateNotification("MM2 Premium", "UI loaded successfully!", 3)
 
--- Module return
-return MM2Premium
+-- Return the GUI instance
+return ScreenGui
