@@ -1,5 +1,5 @@
 -- MM2 Trade Premium UI Script by Chinoks
--- For educational purposes only
+-- Get RICH!
 
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/GreenDeno/Venyx-UI-Library/main/source.lua"))()
 local venyx = library.new("MM2 Trade Premium", 5013109572)
